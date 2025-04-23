@@ -1,0 +1,115 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+}
+
+header {
+  background-color: #003366;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.form-container, .list-container, .estadisticas {
+  background: white;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+label {
+  display: block;
+  margin: 1rem 0 0.5rem;
+}
+
+input, select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#btn-guardar {
+  background-color: #28a745;
+  color: white;
+}
+
+#btn-cancelar {
+  background-color: #ccc;
+}
+
+#btn-nuevo {
+  background-color: #007bff;
+  color: white;
+}
+
+.styled-table {
+  min-width: 900px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.styled-table th, .styled-table td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.styled-table th {
+  background-color: #007bff;
+  color: white;
+}
+
+.styled-table td img {
+  width: 40px;
+  height: 25px;
+}
+
+.action-buttons button {
+  margin: 0 5px;
+}
+
+footer {
+  text-align: center;
+  background: #003366;
+  color: white;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+@media screen and (max-width: 768px) {
+  .styled-table th, .styled-table td {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .list-container {
+    padding: 1rem;
+    overflow-x: auto;
+  }
+}

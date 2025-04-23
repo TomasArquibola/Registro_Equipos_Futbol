@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mundial 2026 - Registro de Equipos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Mundial FIFA 2026</h1>
+    <p>Registro de Equipos Nacionales</p>
+  </header>
+
+  <main class="container">
+    <section id="formulario" class="form-container">
+      <h2 id="form-title">Registrar Equipo</h2>
+      <form id="form-equipo">
+        <input type="hidden" id="id">
+        <label>Nombre del País: <input type="text" id="pais" required></label>
+        <label>Confederación:
+          <select id="confederacion" required>
+            <option value="">Seleccione</option>
+            <option>AFC</option>
+            <option>CAF</option>
+            <option>CONCACAF</option>
+            <option>CONMEBOL</option>
+            <option>OFC</option>
+            <option>UEFA</option>
+          </select>
+        </label>
+        <label>Grupo:
+          <select id="grupo" required>
+            <option value="">Seleccione</option>
+            <option>A</option><option>B</option><option>C</option><option>D</option>
+            <option>E</option><option>F</option><option>G</option><option>H</option>
+          </select>
+        </label>
+        <label>Entrenador Principal: <input type="text" id="entrenador" required></label>
+        <label>Año Primera Participación: <input type="number" id="anio" required></label>
+        <label>Participaciones: <input type="number" id="participaciones" required></label>
+        <label>Mejor Resultado:
+          <select id="resultado" required>
+            <option value="">Seleccione</option>
+            <option>Campeón</option>
+            <option>Subcampeón</option>
+            <option>Semi-finalista</option>
+            <option>Cuartos de final</option>
+            <option>Fase de grupos</option>
+            <option>Nunca clasificó</option>
+          </select>
+        </label>
+        <label>Escudo (URL): <input type="url" id="escudo"></label>
+        <label>Bandera (URL): <input type="url" id="bandera"></label>
+
+        <div class="button-group">
+          <button type="submit" id="btn-guardar">Guardar</button>
+          <button type="button" id="btn-cancelar">Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="lista" class="list-container">
+      <div class="list-header">
+        <h2>Equipos Registrados</h2>
+        <button id="btn-nuevo">Nuevo Equipo</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="tabla-equipos" class="styled-table">
+          <thead>
+            <tr>
+              <th>País</th><th>Conf.</th><th>Grupo</th><th>Entrenador</th>
+              <th>Año</th><th>Part.</th><th>Resultado</th>
+              <th>Escudo</th><th>Bandera</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="lista-equipos">
+            <tr><td colspan="10">No hay equipos registrados</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="estadisticas">
+      <h2>Estadísticas</h2>
+      <p id="conteo-confederaciones"></p>
+      <p id="promedio-participaciones"></p>
+      <p id="campeones-lista"></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 - Sistema Mundial FIFA 2026</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
