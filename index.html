@@ -1,96 +1,87 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mundial 2026 - Registro de Equipos</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Equipos Mundial 2026</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <h1>Mundial FIFA 2026</h1>
-    <p>Registro de Equipos Nacionales</p>
+  <header class="top-header">
+    <h1>Registro Mundial 2026</h1>
+    <p>Gestión de selecciones nacionales</p>
   </header>
 
-  <main class="container">
-    <section id="formulario" class="form-container">
-      <h2 id="form-title">Registrar Equipo</h2>
-      <form id="form-equipo">
-        <input type="hidden" id="id">
-        <label>Nombre del País: <input type="text" id="pais" required></label>
-        <label>Confederación:
-          <select id="confederacion" required>
-            <option value="">Seleccione</option>
-            <option>AFC</option>
-            <option>CAF</option>
-            <option>CONCACAF</option>
-            <option>CONMEBOL</option>
-            <option>OFC</option>
-            <option>UEFA</option>
-          </select>
-        </label>
-        <label>Grupo:
-          <select id="grupo" required>
-            <option value="">Seleccione</option>
-            <option>A</option><option>B</option><option>C</option><option>D</option>
-            <option>E</option><option>F</option><option>G</option><option>H</option>
-          </select>
-        </label>
-        <label>Entrenador Principal: <input type="text" id="entrenador" required></label>
-        <label>Año Primera Participación: <input type="number" id="anio" required></label>
-        <label>Participaciones: <input type="number" id="participaciones" required></label>
-        <label>Mejor Resultado:
-          <select id="resultado" required>
-            <option value="">Seleccione</option>
-            <option>Campeón</option>
-            <option>Subcampeón</option>
-            <option>Semi-finalista</option>
-            <option>Cuartos de final</option>
-            <option>Fase de grupos</option>
-            <option>Nunca clasificó</option>
-          </select>
-        </label>
-        <label>Escudo (URL): <input type="url" id="escudo"></label>
-        <label>Bandera (URL): <input type="url" id="bandera"></label>
-
-        <div class="button-group">
-          <button type="submit" id="btn-guardar">Guardar</button>
-          <button type="button" id="btn-cancelar">Cancelar</button>
-        </div>
-      </form>
-    </section>
-
-    <section id="lista" class="list-container">
-      <div class="list-header">
-        <h2>Equipos Registrados</h2>
-        <button id="btn-nuevo">Nuevo Equipo</button>
+  <section class="panel">
+    <button id="toggle-form" class="primary-btn">Agregar nuevo equipo</button>
+    <form id="team-form" class="hidden">
+      <input type="hidden" id="team-id" />
+      <div class="field"><label>País</label><input type="text" id="country" required /></div>
+      <div class="field"><label>Confederación</label>
+        <select id="zone" required>
+          <option value="">Seleccionar</option>
+          <option>AFC</option><option>CAF</option><option>CONCACAF</option>
+          <option>CONMEBOL</option><option>OFC</option><option>UEFA</option>
+        </select>
       </div>
-      <div style="overflow-x:auto;">
-        <table id="tabla-equipos" class="styled-table">
-          <thead>
-            <tr>
-              <th>País</th><th>Conf.</th><th>Grupo</th><th>Entrenador</th>
-              <th>Año</th><th>Part.</th><th>Resultado</th>
-              <th>Escudo</th><th>Bandera</th><th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="lista-equipos">
-            <tr><td colspan="10">No hay equipos registrados</td></tr>
-          </tbody>
-        </table>
+      <div class="field"><label>Grupo</label>
+        <select id="pool" required>
+          <option value="">Seleccionar</option>
+          <option>A</option>
+          <option>B</option>
+          <option>C</option>
+          <option>D</option>
+          <option>E</option>
+          <option>F</option>
+          <option>G</option>
+          <option>H</option>
+        </select>
       </div>
-    </section>
+      <div class="field"><label>Entrenador</label><input type="text" id="coach" required /></div>
+      <div class="field"><label>Año debut</label><input type="number" id="year" required /></div>
+      <div class="field"><label>Participaciones</label><input type="number" id="appearances" required /></div>
+      <div class="field"><label>Mejor resultado</label>
+        <select id="achievement" required>
+          <option value="">Seleccionar</option>
+          <option>Campeón</option><option>Subcampeón</option><option>Semi-finalista</option>
+          <option>Cuartos de final</option><option>Fase de grupos</option><option>Nunca clasificó</option>
+        </select>
+      </div>
+      <div class="field"><label>Escudo</label><input type="url" id="crest" /></div>
+      <div class="field"><label>Bandera</label><input type="url" id="flag" /></div>
+      <div class="actions">
+        <button type="submit" class="save-btn">Guardar</button>
+        <button type="button" id="cancel-btn" class="cancel-btn">Cancelar</button>
+      </div>
+    </form>
+  </section>
 
-    <section class="estadisticas">
-      <h2>Estadísticas</h2>
-      <p id="conteo-confederaciones"></p>
-      <p id="promedio-participaciones"></p>
-      <p id="campeones-lista"></p>
-    </section>
-  </main>
+  <section class="table-section">
+    <h2>Lista de Selecciones</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>País</th><th>Conf.</th><th>Grupo</th><th>Entrenador</th>
+            <th>Año</th><th>Part.</th><th>Resultado</th><th>Escudo</th><th>Bandera</th><th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="team-table">
+          <tr><td colspan="10">No hay registros</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-  <footer>
-    <p>© 2025 - Sistema Mundial FIFA 2026</p>
+  <section class="statistics">
+    <h3>Resumen</h3>
+    <p id="stat-zones"></p>
+    <p id="stat-average"></p>
+    <p id="stat-champs"></p>
+  </section>
+
+  <footer class="bottom-footer">
+    <p>© 2025 Proyecto Mundial FIFA 2026</p>
   </footer>
 
   <script src="script.js"></script>
