@@ -1,126 +1,127 @@
-
-const DB_NAME = "RegistroMundial";
-const DB_VERSION = 1;
-const STORE_NAME = "selecciones";
+const dbName = "EquiposMundialDB";
+const dbVersion = 1;
+const storeName = "selecciones";
 let db = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-  const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-  request.onerror = () => alert("IndexedDB no disponible");
-  request.onsuccess = e => {
+  const req = indexedDB.open(dbName, dbVersion);
+  req.onerror = () => alert("IndexedDB no disponible");
+  req.onsuccess = e => {
     db = e.target.result;
-    cargarEquipos();
+    renderTeams();
+  };
+  req.onupgradeneeded = e => {
+    db = e.target.result;
+    const store = db.createObjectStore(storeName, { keyPath: "id", autoIncrement: true });
+    store.createIndex("zone", "zone", { unique: false });
+    store.createIndex("pool", "pool", { unique: false });
+    store.createIndex("achievement", "achievement", { unique: false });
   };
 
-  request.onupgradeneeded = e => {
-    db = e.target.result;
-    const store = db.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true });
-    store.createIndex("confederacion", "confederacion", { unique: false });
-    store.createIndex("grupo", "grupo", { unique: false });
+  document.getElementById("toggle-form").onclick = () => {
+    document.getElementById("team-form").classList.toggle("hidden");
   };
 
-  document.querySelector("#registro-form").addEventListener("submit", guardarDatos);
-  document.querySelector("#cancelar").addEventListener("click", reiniciarFormulario);
-  document.querySelector("#nuevo").addEventListener("click", () => alternarFormulario(true));
+  document.getElementById("cancel-btn").onclick = () => {
+    document.getElementById("team-form").reset();
+    document.getElementById("team-id").value = "";
+    document.getElementById("team-form").classList.add("hidden");
+  };
+
+  document.getElementById("team-form").onsubmit = saveTeam;
 });
 
-function guardarDatos(e) {
+function saveTeam(e) {
   e.preventDefault();
-
-  const equipo = {
-    pais: document.getElementById("pais").value,
-    confederacion: document.getElementById("confederacion").value,
-    grupo: document.getElementById("grupo").value,
-    tecnico: document.getElementById("tecnico").value,
-    debut: parseInt(document.getElementById("debut").value),
-    apariciones: parseInt(document.getElementById("apariciones").value),
-    logro: document.getElementById("logro").value,
-    escudo: document.getElementById("escudo").value,
-    bandera: document.getElementById("bandera").value
+  const team = {
+    country: document.getElementById("country").value,
+    zone: document.getElementById("zone").value,
+    pool: document.getElementById("pool").value,
+    coach: document.getElementById("coach").value,
+    year: parseInt(document.getElementById("year").value),
+    appearances: parseInt(document.getElementById("appearances").value),
+    achievement: document.getElementById("achievement").value,
+    crest: document.getElementById("crest").value,
+    flag: document.getElementById("flag").value
   };
 
-  const id = document.getElementById("id").value;
-  const trans = db.transaction([STORE_NAME], "readwrite");
-  const store = trans.objectStore(STORE_NAME);
-  const req = id ? store.put({ ...equipo, id: parseInt(id) }) : store.add(equipo);
+  const id = document.getElementById("team-id").value;
+  const tx = db.transaction([storeName], "readwrite");
+  const store = tx.objectStore(storeName);
 
+  const req = id ? store.put({ ...team, id: parseInt(id) }) : store.add(team);
   req.onsuccess = () => {
-    cargarEquipos();
-    reiniciarFormulario();
+    renderTeams();
+    document.getElementById("team-form").reset();
+    document.getElementById("team-id").value = "";
+    document.getElementById("team-form").classList.add("hidden");
   };
 }
 
-function reiniciarFormulario() {
-  document.querySelector("#registro-form").reset();
-  document.getElementById("id").value = "";
-  alternarFormulario(false);
-}
-
-function alternarFormulario(mostrar) {
-  document.querySelector("#panel-registro").style.display = mostrar ? "block" : "none";
-  document.querySelector("#panel-listado").style.display = mostrar ? "none" : "block";
-}
-
-function cargarEquipos() {
-  const trans = db.transaction([STORE_NAME], "readonly");
-  const store = trans.objectStore(STORE_NAME);
+function renderTeams() {
+  const tx = db.transaction([storeName], "readonly");
+  const store = tx.objectStore(storeName);
   const req = store.getAll();
 
   req.onsuccess = () => {
-    const datos = req.result;
-    const cuerpo = document.getElementById("contenido-tabla");
-    cuerpo.innerHTML = "";
+    const teams = req.result;
+    const tbody = document.getElementById("team-table");
+    tbody.innerHTML = "";
 
-    if (!datos.length) {
-      cuerpo.innerHTML = "<tr><td colspan='10'>No hay datos disponibles</td></tr>";
+    if (teams.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="10">No hay registros</td></tr>`;
       return;
     }
 
-    datos.forEach(e => {
-      const fila = document.createElement("tr");
-      fila.innerHTML = `
-        <td>${e.pais}</td>
-        <td>${e.confederacion}</td>
-        <td>${e.grupo}</td>
-        <td>${e.tecnico}</td>
-        <td>${e.debut}</td>
-        <td>${e.apariciones}</td>
-        <td>${e.logro}</td>
-        <td><img src="${e.escudo}" width="30"></td>
-        <td><img src="${e.bandera}" width="30"></td>
+    const stats = { zones: {}, champs: [], totalApps: 0 };
+    teams.forEach(t => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${t.country}</td><td>${t.zone}</td><td>${t.pool}</td><td>${t.coach}</td>
+        <td>${t.year}</td><td>${t.appearances}</td><td>${t.achievement}</td>
+        <td><img src="${t.crest}" alt="escudo" /></td>
+        <td><img src="${t.flag}" alt="bandera" /></td>
         <td>
-          <button onclick="editar(${e.id})">✏️</button>
-          <button onclick="eliminar(${e.id})">🗑️</button>
-        </td>`;
-      cuerpo.appendChild(fila);
+          <button onclick="editTeam(${t.id})">✏️</button>
+          <button onclick="deleteTeam(${t.id})">🗑️</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+
+      stats.zones[t.zone] = (stats.zones[t.zone] || 0) + 1;
+      stats.totalApps += t.appearances;
+      if (t.achievement === "Campeón") stats.champs.push(t.country);
     });
+
+    document.getElementById("stat-zones").textContent = `Equipos por confederación: ${JSON.stringify(stats.zones)}`;
+    document.getElementById("stat-average").textContent = `Promedio de participaciones: ${(stats.totalApps / teams.length).toFixed(2)}`;
+    document.getElementById("stat-champs").textContent = `Equipos campeones: ${stats.champs.join(", ") || "Ninguno"}`;
   };
 }
 
-function editar(id) {
-  const trans = db.transaction([STORE_NAME], "readonly");
-  const store = trans.objectStore(STORE_NAME);
+function editTeam(id) {
+  const tx = db.transaction([storeName], "readonly");
+  const store = tx.objectStore(storeName);
   const req = store.get(id);
-
   req.onsuccess = () => {
-    const d = req.result;
-    document.getElementById("id").value = d.id;
-    document.getElementById("pais").value = d.pais;
-    document.getElementById("confederacion").value = d.confederacion;
-    document.getElementById("grupo").value = d.grupo;
-    document.getElementById("tecnico").value = d.tecnico;
-    document.getElementById("debut").value = d.debut;
-    document.getElementById("apariciones").value = d.apariciones;
-    document.getElementById("logro").value = d.logro;
-    document.getElementById("escudo").value = d.escudo;
-    document.getElementById("bandera").value = d.bandera;
-    alternarFormulario(true);
+    const t = req.result;
+    document.getElementById("team-id").value = t.id;
+    document.getElementById("country").value = t.country;
+    document.getElementById("zone").value = t.zone;
+    document.getElementById("pool").value = t.pool;
+    document.getElementById("coach").value = t.coach;
+    document.getElementById("year").value = t.year;
+    document.getElementById("appearances").value = t.appearances;
+    document.getElementById("achievement").value = t.achievement;
+    document.getElementById("crest").value = t.crest;
+    document.getElementById("flag").value = t.flag;
+    document.getElementById("team-form").classList.remove("hidden");
   };
 }
 
-function eliminar(id) {
+function deleteTeam(id) {
   if (!confirm("¿Eliminar este equipo?")) return;
-  const trans = db.transaction([STORE_NAME], "readwrite");
-  trans.objectStore(STORE_NAME).delete(id).onsuccess = cargarEquipos;
+  const tx = db.transaction([storeName], "readwrite");
+  const store = tx.objectStore(storeName);
+  store.delete(id).onsuccess = renderTeams;
 }
